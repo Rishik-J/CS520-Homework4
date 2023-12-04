@@ -12,12 +12,12 @@ import model.Transaction;
 import model.Filter.TransactionFilter;
 
 public class ExpenseTrackerController {
-  
+
   private ExpenseTrackerModel model;
   private ExpenseTrackerView view;
-  /** 
+  /**
    * The Controller is applying the Strategy design pattern.
-   * This is the has-a relationship with the Strategy class 
+   * This is the has-a relationship with the Strategy class
    * being used in the applyFilter method.
    */
   private TransactionFilter filter;
@@ -42,16 +42,15 @@ public class ExpenseTrackerController {
     if (!InputValidation.isValidCategory(category)) {
       return false;
     }
-    
+
     Transaction t = new Transaction(amount, category);
     model.addTransaction(t);
-    view.update(model);
     return true;
   }
 
   public void applyFilter() {
-    //null check for filter
-    if(filter!=null){
+    // null check for filter
+    if (filter != null) {
       // Use the Strategy class to perform the desired filtering
       List<Transaction> transactions = model.getTransactions();
       List<Transaction> filteredTransactions = filter.filter(transactions);
@@ -63,25 +62,22 @@ public class ExpenseTrackerController {
         }
       }
       model.setMatchedFilterIndices(rowIndexes);
-      view.update(model);
-    }
-    else{
+    } else {
       JOptionPane.showMessageDialog(view, "No filter applied");
-      view.toFront();}
+      view.toFront();
+    }
 
   }
 
-  //for undoing any selected transaction
+  // for undoing any selected transaction
   public boolean undoTransaction(int rowIndex) {
     if (rowIndex >= 0 && rowIndex < model.getTransactions().size()) {
       Transaction removedTransaction = model.getTransactions().get(rowIndex);
       model.removeTransaction(removedTransaction);
-      view.update(model);
-      // The undo was allowed.
       return true;
     }
 
     // The undo was disallowed.
     return false;
-  }    
+  }
 }

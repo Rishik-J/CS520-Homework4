@@ -19,15 +19,35 @@ public class ExpenseTrackerModel {
     matchedFilterIndices = new ArrayList<Integer>();
   }
 
+  // public void addTransaction(Transaction t) {
+  // // Perform input validation to guarantee that all transactions added are
+  // // non-null.
+  // if (t == null) {
+  // throw new IllegalArgumentException("The new transaction must be non-null.");
+  // }
+  // transactions.add(t);
+  // // The previous filter is no longer valid.
+  // matchedFilterIndices.clear();
+  // }
+
   public void addTransaction(Transaction t) {
     // Perform input validation to guarantee that all transactions added are
     // non-null.
     if (t == null) {
       throw new IllegalArgumentException("The new transaction must be non-null.");
     }
-    transactions.add(t);
+    this.transactions.add(t);
     // The previous filter is no longer valid.
     matchedFilterIndices.clear();
+
+    // Notify all registered observers about the change
+    notifyListeners();
+  }
+
+  private void notifyListeners() {
+    for (ExpenseTrackerModelListener listener : listeners) {
+      listener.update(this);
+    }
   }
 
   public void removeTransaction(Transaction t) {
@@ -55,6 +75,9 @@ public class ExpenseTrackerModel {
     // For encapsulation, copy in the input list
     this.matchedFilterIndices.clear();
     this.matchedFilterIndices.addAll(newMatchedFilterIndices);
+
+    // Notify all registered observers about the change
+    notifyListeners();
   }
 
   public List<Integer> getMatchedFilterIndices() {
@@ -78,6 +101,8 @@ public class ExpenseTrackerModel {
     // TODO
     if (listener != null && !listeners.contains(listener)) {
       listeners.add(listener);
+      System.out.println("listener added");
+      System.out.println("listener size" + listeners.size());
       return true;
     }
     return false;
