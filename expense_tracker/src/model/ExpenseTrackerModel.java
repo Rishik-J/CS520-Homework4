@@ -54,6 +54,9 @@ public class ExpenseTrackerModel {
     transactions.remove(t);
     // The previous filter is no longer valid.
     matchedFilterIndices.clear();
+
+    // Notify all registered observers about the change
+    notifyListeners();
   }
 
   public List<Transaction> getTransactions() {

@@ -225,6 +225,7 @@ public class ExpenseTrackerView extends JFrame implements ExpenseTrackerModelLis
 
   // Method to get the selected row index from the table
   public int getSelectedRowIndex() {
+    System.out.println("getSelectedRowIndex called" + transactionsTable.getSelectedRow());
     return transactionsTable.getSelectedRow();
   }
 
