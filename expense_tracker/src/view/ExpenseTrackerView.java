@@ -231,7 +231,8 @@ public class ExpenseTrackerView extends JFrame implements ExpenseTrackerModelLis
 
   public void update(ExpenseTrackerModel model) {
     System.out.println("update called: " + model.getTransactions().size());
-    System.out.println("update called: " + model.getTransactions().get(model.getTransactions().size() - 1).getAmount());
+    // System.out.println("update called: " +
+    // model.getTransactions().get(model.getTransactions().size() - 1).getAmount());
 
     refreshTable(model.getTransactions());
 

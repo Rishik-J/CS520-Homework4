@@ -51,7 +51,8 @@ public class ExpenseTrackerModel {
   }
 
   public void removeTransaction(Transaction t) {
-    transactions.remove(t);
+    this.transactions.remove(t);
+    System.out.println("removeTransaction called" + t.getAmount());
     // The previous filter is no longer valid.
     matchedFilterIndices.clear();
 

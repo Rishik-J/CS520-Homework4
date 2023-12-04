@@ -350,6 +350,7 @@ public class TestExample {
                 // Create an instance of ExpenseTrackerModel and ExpenseTrackerView
                 ExpenseTrackerModel model = new ExpenseTrackerModel();
                 ExpenseTrackerView view = new ExpenseTrackerView();
+                ExpenseTrackerController controller = new ExpenseTrackerController(model, view);
 
                 // Register the view with the model
                 model.register(view);
@@ -364,8 +365,51 @@ public class TestExample {
                 // Check that the number of transactions in the model is updated correctly
                 assertEquals(1, model.getTransactions().size());
 
+                // filter by category "Food"
+                controller.setFilter(new CategoryFilter("Food"));
+                controller.applyFilter();
+
                 // Check that the view received the update
                 assertEquals(1, view.getDisplayedTransactions().size());
+        }
+
+        @Test
+        public void testObserverPattern() {
+                // Setup
+                // Create an instance of ExpenseTrackerModel and ExpenseTrackerView and
+                // ExpenseTrackerController
+                ExpenseTrackerModel model = new ExpenseTrackerModel();
+                ExpenseTrackerView view = new ExpenseTrackerView();
+                ExpenseTrackerController controller = new ExpenseTrackerController(model, view);
+
+                // Register the view with the model
+                model.register(view);
+
+                // Check initial number of transactions
+                double initialAmount = 50.0;
+                String initialCategory = "food";
+                controller.addTransaction(initialAmount, initialCategory);
+
+                // Check pre-conditions
+                assertEquals(1, model.getTransactions().size());
+                // check the view has the same transaction
+                controller.setFilter(new CategoryFilter(initialCategory));
+                controller.applyFilter();
+                assertEquals(1, view.getDisplayedTransactions().size());
+
+                // Perform the action: Update the transaction
+                double newAmount = 100.0;
+                String newCategory = "food";
+                Transaction updatedTransaction = new Transaction(newAmount, newCategory);
+                model.addTransaction(updatedTransaction);
+
+                // Check post-conditions: The view should automatically update to reflect the
+                // changes
+                assertEquals(2, model.getTransactions().size());
+                // check the view has the same transaction
+                controller.setFilter(new CategoryFilter(newCategory));
+                controller.applyFilter();
+                assertEquals(2, view.getDisplayedTransactions().size());
         }
 
 }
