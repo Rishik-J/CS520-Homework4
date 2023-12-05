@@ -4,6 +4,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The {@code ExpenseTrackerModel} class represents the Model in the MVC
+ * (Model-View-Controller) architecture pattern.
+ * <p>
+ * This class implements the Observer design pattern as the Observable. It
+ * maintains a list of {@code ExpenseTrackerModelListener}
+ * objects that are notified whenever the state of the model changes, such as
+ * when a transaction is added or removed.
+ * <p>
+ * The {@code ExpenseTrackerModel} class maintains a list of transactions and a
+ * list of matched filter indices. It provides
+ * methods for adding transactions, applying filters, and managing listeners.
+ * <p>
+ * When a transaction is added, removed, or a filter is applied, the model
+ * updates the list of matched filter indices and then notifies
+ * all registered listeners of the change. Each listener's {@code stateChanged}
+ * method is called with a {@code ChangeEvent}
+ * that contains this model as the source.
+ */
+
 public class ExpenseTrackerModel {
 
   // encapsulation - data integrity
@@ -19,17 +39,14 @@ public class ExpenseTrackerModel {
     matchedFilterIndices = new ArrayList<Integer>();
   }
 
-  // public void addTransaction(Transaction t) {
-  // // Perform input validation to guarantee that all transactions added are
-  // // non-null.
-  // if (t == null) {
-  // throw new IllegalArgumentException("The new transaction must be non-null.");
-  // }
-  // transactions.add(t);
-  // // The previous filter is no longer valid.
-  // matchedFilterIndices.clear();
-  // }
-
+  /**
+   * Adds the given transaction to the list of transactions.
+   * Impliments the observer pattern
+   * After adding the transaction, the model notifies all subscribed observers
+   * (view)
+   * 
+   * @param transaction the transaction object to add
+   */
   public void addTransaction(Transaction t) {
     // Perform input validation to guarantee that all transactions added are
     // non-null.
@@ -41,15 +58,17 @@ public class ExpenseTrackerModel {
     matchedFilterIndices.clear();
 
     // Notify all registered observers about the change
-    notifyListeners();
+    stateChanged();
   }
 
-  private void notifyListeners() {
-    for (ExpenseTrackerModelListener listener : listeners) {
-      listener.update(this);
-    }
-  }
-
+  /**
+   * Removes the given transaction from the list of transactions.
+   * Impliments the observer pattern by notifying all subscribed observers after
+   * removing the transaction by calling the update method on each observer with
+   * the new model (new state)
+   * 
+   * @param transaction the transaction object to remove
+   */
   public void removeTransaction(Transaction t) {
     this.transactions.remove(t);
     System.out.println("removeTransaction called" + t.getAmount());
@@ -57,7 +76,7 @@ public class ExpenseTrackerModel {
     matchedFilterIndices.clear();
 
     // Notify all registered observers about the change
-    notifyListeners();
+    stateChanged();
   }
 
   public List<Transaction> getTransactions() {
@@ -65,6 +84,14 @@ public class ExpenseTrackerModel {
     return Collections.unmodifiableList(new ArrayList<>(transactions));
   }
 
+  /**
+   * Sets the matchedFilterIndices to the given list of indices.
+   * Impliments the observer pattern by notifying all subscribed observers after
+   * setting the matchedFilterIndices by calling the update method on each
+   * observer with the new model (new state)
+   * 
+   * @param list of indices that match the filter
+   */
   public void setMatchedFilterIndices(List<Integer> newMatchedFilterIndices) {
     // Perform input validation
     if (newMatchedFilterIndices == null) {
@@ -81,7 +108,7 @@ public class ExpenseTrackerModel {
     this.matchedFilterIndices.addAll(newMatchedFilterIndices);
 
     // Notify all registered observers about the change
-    notifyListeners();
+    stateChanged();
   }
 
   public List<Integer> getMatchedFilterIndices() {
@@ -113,6 +140,11 @@ public class ExpenseTrackerModel {
 
   }
 
+  /**
+   * Function to return the number of listeners
+   * 
+   * @return number of listeners
+   */
   public int numberOfListeners() {
     // For testing, this is one of the methods.
     //
@@ -120,6 +152,12 @@ public class ExpenseTrackerModel {
     return listeners.size();
   }
 
+  /**
+   * Function to check if the given listener is already Subscribed
+   * 
+   * @param listener
+   * @return true if the listener is already Subscribed, false otherwise
+   */
   public boolean containsListener(ExpenseTrackerModelListener listener) {
     // For testing, this is one of the methods.
     //
@@ -127,6 +165,12 @@ public class ExpenseTrackerModel {
     return listeners.contains(listener);
   }
 
+  /**
+   * Function that updates all the subscribed observers (view) with the new
+   * model (new state). For each listener, the update method is called with the
+   * new model (new state).
+   * 
+   */
   protected void stateChanged() {
     // For the Observable class, this is one of the methods.
     //

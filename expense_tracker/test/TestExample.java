@@ -412,4 +412,61 @@ public class TestExample {
                 assertEquals(2, view.getDisplayedTransactions().size());
         }
 
+        @Test
+        public void testUndoFunction() {
+                // Setup
+                ExpenseTrackerModel model = new ExpenseTrackerModel();
+                ExpenseTrackerView view = new ExpenseTrackerView();
+                ExpenseTrackerController controller = new ExpenseTrackerController(model, view);
+
+                // Register the view with the model
+                model.register(view);
+
+                // Add a transaction
+                double initialAmount = 50.0;
+                String initialCategory = "food";
+                controller.addTransaction(initialAmount, initialCategory);
+
+                // Perform the action: Undo the last transaction
+                controller.undoTransaction(0);
+
+                // Check post-conditions: The state of the model and view should be reverted to
+                // its previous state
+                assertEquals(0, model.getTransactions().size());
+                controller.setFilter(new CategoryFilter(initialCategory));
+                controller.applyFilter();
+                assertEquals(0, view.getDisplayedTransactions().size());
+        }
+
+        @Test
+        public void testUndoFunctionWithMultiple() {
+                // Setup
+                ExpenseTrackerModel model = new ExpenseTrackerModel();
+                ExpenseTrackerView view = new ExpenseTrackerView();
+                ExpenseTrackerController controller = new ExpenseTrackerController(model, view);
+
+                // Register the view with the model
+                model.register(view);
+
+                // Add a transaction
+                double initialAmount = 50.0;
+                String initialCategory = "food";
+                controller.addTransaction(initialAmount, initialCategory);
+
+                // Add another transaction
+                double newAmount = 100.0;
+                String newCategory = "Food";
+                controller.addTransaction(newAmount, newCategory);
+
+                // Perform the action: Undo the last transaction
+                controller.undoTransaction(1);
+
+                // Check post-conditions: The state of the model and view should be reverted to
+                // its previous state
+                assertEquals(1, model.getTransactions().size());
+                controller.setFilter(new CategoryFilter(initialCategory));
+                controller.applyFilter();
+                assertEquals(1, view.getDisplayedTransactions().size());
+        }
+
 }
